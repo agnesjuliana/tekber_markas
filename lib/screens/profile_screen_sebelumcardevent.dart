@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'deskripsi_acara.dart'; // Import halaman Deskripsi Acara
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -179,13 +180,15 @@ class ProfileScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 16),
                     Align(
-                      alignment:
-                          Alignment.centerRight, // Menempatkan tombol di kanan bawah
-                      child:
-                      TextButton(
-                        onPressed: () {}, 
-                        child:
-                        const Text(
+                      alignment: Alignment.centerRight, // Menempatkan tombol di kanan bawah
+                      child: TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => DeskripsiAcaraPage()),
+                          );
+                        },
+                        child: const Text(
                           'Detail acara',
                           style: TextStyle(
                             color: Colors.red, // Warna teks merah
@@ -194,9 +197,9 @@ class ProfileScreen extends StatelessWidget {
                             decorationThickness: 2, // Ketebalan garis bawah
                             letterSpacing: 2.0, // Jarak antara huruf dan underline
                           ),
-                        ), // Garis bawah pada teks "Detail acara"
-                      ), 
-                    ),
+                        ),
+                      ),
+                    )
                   ],
                 ),
               ),

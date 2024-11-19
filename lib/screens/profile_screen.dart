@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'deskripsi_acara.dart';
 
 class ProfileScreen extends StatelessWidget {
   // Hapus const di sini
@@ -37,7 +38,8 @@ class ProfileScreen extends StatelessWidget {
                   // Gambar Profil
                   const CircleAvatar(
                     radius: 40,
-                    backgroundImage: AssetImage('lib/assets/images/profile_photo.jpg'), // Ganti dengan URL gambar profil Anda
+                    backgroundImage: AssetImage(
+                        'lib/assets/images/profile_photo.jpg'), // Ganti dengan URL gambar profil Anda
                   ),
                   const SizedBox(width: 16),
                   // Nama dan Username
@@ -71,7 +73,7 @@ class ProfileScreen extends StatelessWidget {
               const Text(
                 'Tentang saya',
                 style:
-                    TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
               const Text(
@@ -81,144 +83,165 @@ class ProfileScreen extends StatelessWidget {
               const Divider(),
               const SizedBox(height: 8),
               // Tab Event dan Sertifikat
-              DefaultTabController(
-                length: 2,
-                child: Column(
+        DefaultTabController(
+          length: 2,
+          child: Column(
+            children: [
+              const TabBar(
+                labelColor: Colors.red,
+                unselectedLabelColor: Colors.grey,
+                tabs: [
+                  Tab(text: 'Event'),
+                  Tab(text: 'Sertifikat'),
+                ],
+              ),
+              const SizedBox(height: 12),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.3, // Tinggi konten tab
+                child: TabBarView(
                   children: [
-                    const TabBar(
-                      labelColor: Colors.red,
-                      unselectedLabelColor: Colors.grey,
-                      tabs: [
-                        Tab(text: 'Event'),
-                        Tab(text: 'Sertifikat'),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.3, // Tinggi konten tab
-                      child: TabBarView(
-                        children: [
-                          // Konten Event
-                          _buildEventList(), // Fungsi untuk membangun daftar event
-                          // Konten Sertifikat
-                          _buildCertificateList(),
-                        ],
-                      ),
-                    )
+                    // Konten Event
+                    _buildEventList(context), // Kirimkan context di sini
+                    // Konten Sertifikat
+                    _buildCertificateList(),
                   ],
                 ),
-              ),
+              )
             ],
+          ),
+        ),
+        ],
           ),
         ),
       ),
       bottomNavigationBar:
-          _buildBottomNavigationBar(), // Bottom navigation bar
+      _buildBottomNavigationBar(), // Bottom navigation bar
     );
   }
 
-Widget _buildEventList() {
-  return ListView(
-    children: [
-      _buildEventCard(
-        title: 'Kelas Intensif Hacker Episode 1',
-        date: 'Selasa, 14 November 2023',
-        location: 'Jemursari, Surabaya',
-        imagePath: 'lib/assets/images/event_image.png',
-      ),
-      _buildEventCard(
-        title: 'Sekolah Beta Intensif: Hustler',
-        date: 'Rabu, 15 November 2023',
-        location: 'Jemursari, Surabaya',
-        imagePath: 'lib/assets/images/event_image_1.png',
-      ),
-    ],
-  );
-}
-
-Widget _buildEventCard({
-  required String title,
-  required String date,
-  required String location,
-  required String imagePath,
-}) {
-  return Card(
-    margin: const EdgeInsets.symmetric(vertical: 8), // Margin antar card event
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(12), // Membuat sudut card melengkung
-    ),
-    elevation: 2, // Memberikan bayangan lembut pada card
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _buildEventList(BuildContext context) {
+    return ListView(
       children: [
-        // Gambar Event di bagian atas
-        ClipRRect(
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(12),
-            topRight: Radius.circular(12),
-          ),
-          child: Image.asset(
-            imagePath, // Gambar event dari parameter
-            width: double.infinity,
-            height: 200,
-            fit: BoxFit.cover,
-          ),
+        _buildEventCard(
+          context: context,
+          title: 'Kelas Intensif Hacker Episode 1',
+          date: 'Selasa, 14 November 2023',
+          location: 'Jemursari, Surabaya',
+          imagePath: 'lib/assets/images/event_image.png',
         ),
-        const Divider(
-          color: Colors.red, // Garis merah sebagai pembatas
-          thickness: 2,
-        ),
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Judul Event
-              Text(
-                title, // Judul event dari parameter
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18, // Ukuran font lebih besar untuk judul
-                ),
-              ),
-              const SizedBox(height: 8),
-              // Tanggal Event dengan ikon kalender berwarna merah
-              Row(
-                children: [
-                  const Icon(Icons.calendar_today, size: 16, color: Colors.red), // Ikon kalender merah
-                  const SizedBox(width: 4),
-                  Text(date, style: const TextStyle(color: Colors.grey)), // Tanggal dari parameter
-                ],
-              ),
-              const SizedBox(height: 4),
-              // Lokasi Event dengan ikon lokasi berwarna merah
-              Row(
-                children: [
-                  const Icon(Icons.location_on, size: 16, color: Colors.red), // Ikon lokasi merah
-                  const SizedBox(width: 4),
-                  Text(location, style:
-                   const TextStyle(color:
-                   Colors.grey)), // Lokasi dari parameter
-                ],
-              ),
-              const SizedBox(height:
-               16),
-              Align(alignment:
-               Alignment.centerRight, child:
-               TextButton(onPressed:
-               () {}, child:
-               const Text('Detail acara', style:
-               TextStyle(color:
-               Colors.red, decoration:
-               TextDecoration.underline))), 
-              ),
-            ],
-          ),
+        _buildEventCard(
+          context: context,
+          title: 'Sekolah Beta Intensif: Hustler',
+          date: 'Rabu, 15 November 2023',
+          location: 'Jemursari, Surabaya',
+          imagePath: 'lib/assets/images/event_image_1.png',
         ),
       ],
-    ),
-  );
-}
+    );
+  }
+
+
+
+  Widget _buildEventCard({
+    required BuildContext context,
+    required String title,
+    required String date,
+    required String location,
+    required String imagePath,
+  }) {
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      // Margin antar card event
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(
+            12), // Membuat sudut card melengkung
+      ),
+      elevation: 2,
+      // Memberikan bayangan lembut pada card
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Gambar Event di bagian atas
+          ClipRRect(
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(12),
+              topRight: Radius.circular(12),
+            ),
+            child: Image.asset(
+              imagePath, // Gambar event dari parameter
+              width: double.infinity,
+              height: 200,
+              fit: BoxFit.cover,
+            ),
+          ),
+          const Divider(
+            color: Colors.red, // Garis merah sebagai pembatas
+            thickness: 2,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Judul Event
+                Text(
+                  title, // Judul event dari parameter
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18, // Ukuran font lebih besar untuk judul
+                  ),
+                ),
+                const SizedBox(height: 8),
+                // Tanggal Event dengan ikon kalender berwarna merah
+                Row(
+                  children: [
+                    const Icon(
+                        Icons.calendar_today, size: 16, color: Colors.red),
+                    // Ikon kalender merah
+                    const SizedBox(width: 4),
+                    Text(date, style: const TextStyle(color: Colors.grey)),
+                    // Tanggal dari parameter
+                  ],
+                ),
+                const SizedBox(height: 4),
+                // Lokasi Event dengan ikon lokasi berwarna merah
+                Row(
+                  children: [
+                    const Icon(Icons.location_on, size: 16, color: Colors.red),
+                    // Ikon lokasi merah
+                    const SizedBox(width: 4),
+                    Text(location, style: const TextStyle(color: Colors.grey)),
+                    // Lokasi dari parameter
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => DeskripsiAcaraPage()),
+                      );
+                    },
+                    child: const Text(
+                      'Detail acara',
+                      style: TextStyle(
+                        color: Colors.red,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
 
   Widget _buildStatCard(String text, Color color) {
     return Container(
