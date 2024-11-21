@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'screens/profile_screen.dart'; // Import ProfileScreen
+import 'screens/start_screen.dart'; // Import ProfileScreen
 
 void main() {
   runApp(const MyApp());
@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       // Arahkan ke ProfileScreen sebagai halaman utama
-      home: ProfileScreen(),
+      home: StartScreen(),
     );
   }
 }
