@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tekber_markas/screens/homepage.dart';
 import 'screens/start_screen.dart'; // Import ProfileScreen
 
 void main() {
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       // Arahkan ke ProfileScreen sebagai halaman utama
-      home: StartScreen(),
+      home: HomePage(),
     );
   }
 }
