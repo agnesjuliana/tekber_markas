@@ -10,7 +10,7 @@ class BottomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFFDA1E3D), 
+        color: const Color(0xFFDA1E3D),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.04),
@@ -28,25 +28,25 @@ class BottomNavBar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           _NavBarItem(
-            assetPath: 'assets/icons/home.png',
+            assetPath: 'lib/assets/icons/home.png', // Still passing string here
             label: 'Home',
             isActive: currentIndex == 0,
             onTap: () => onTap(0),
           ),
           _NavBarItem(
-            assetPath: 'assets/icons/event.png',
+            assetPath: 'lib/assets/icons/event.png', // Still passing string here
             label: 'Event',
             isActive: currentIndex == 1,
             onTap: () => onTap(1),
           ),
           _NavBarItem(
-            assetPath: 'assets/icons/calendar.png',
+            assetPath: 'lib/assets/icons/calendar.png', // Still passing string here
             label: 'Calendar',
             isActive: currentIndex == 2,
             onTap: () => onTap(2),
           ),
           _NavBarItem(
-            assetPath: 'assets/icons/profile.png',
+            assetPath: 'lib/assets/icons/profile.png', // Still passing string here
             label: 'Profile',
             isActive: currentIndex == 3,
             onTap: () => onTap(3),
@@ -58,7 +58,7 @@ class BottomNavBar extends StatelessWidget {
 }
 
 class _NavBarItem extends StatelessWidget {
-  final String assetPath;
+  final String assetPath; // This is still a string holding the path to the image
   final String label;
   final bool isActive;
   final VoidCallback onTap;
@@ -84,7 +84,7 @@ class _NavBarItem extends StatelessWidget {
             height: 24,
             alignment: Alignment.center,
             child: Image.asset(
-              assetPath,
+              assetPath, // This is where we call Image.asset() with the path from assetPath
               color: Colors.white, // Apply a white tint if needed
               fit: BoxFit.contain,
             ),

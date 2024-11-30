@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tekber_markas/screens/form_pendaftaran.dart'; // Import halaman form pendaftaran
+import 'package:tekber_markas/screens/form_pendaftaran.dart'; 
 
 class DeskripsiAcaraPage extends StatelessWidget {
   @override
@@ -14,7 +14,7 @@ class DeskripsiAcaraPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Image.asset('lib/assets/images/event_image.png'), // Ganti dengan logo acara Anda
+            Image.asset('lib/assets/images/event_image.png'), 
             SizedBox(height: 20),
             Text(
               'Kelas Intensif Hustler',
@@ -52,7 +52,7 @@ class DeskripsiAcaraPage extends StatelessWidget {
             Center(
               child: ElevatedButton(
                 onPressed: () {
-                  // Navigasi ke halaman form pendaftaran
+                  
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => FormPendaftaranPage()),

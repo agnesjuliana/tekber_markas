@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'deskripsi_acara.dart'; // Import halaman Deskripsi Acara
+import 'package:tekber_markas/screens/deskripsi_acara.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -185,7 +185,7 @@ class ProfileScreen extends StatelessWidget {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => DeskripsiAcaraPage()),
+                            MaterialPageRoute(builder: (context) => DeskripsiAcaraPage ()),
                           );
                         },
                         child: const Text(

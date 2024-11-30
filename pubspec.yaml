@@ -24,3 +24,4 @@ flutter:
   # Bagian ini untuk menambahkan asset gambar ke aplikasi
   assets:
     - lib/assets/images/
+    - lib/assets/icons/

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
 class EventCard extends StatelessWidget {
-  const EventCard({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -21,13 +19,14 @@ class EventCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Menggunakan Image.asset untuk gambar
           Container(
             width: 220,
             height: 140,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.vertical(top: Radius.circular(6)),
               image: DecorationImage(
-                image: AssetImage('lib/assets/images/event-1.jpg'),
+                image: AssetImage('lib/assets/images/event-1.jpg'), // Perbarui dengan Image.asset
                 fit: BoxFit.cover,
               ),
             ),
@@ -36,7 +35,7 @@ class EventCard extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
+              children: [
                 Text(
                   'Hackaton : UI/UX Management System Apps',
                   style: TextStyle(
@@ -64,6 +63,25 @@ class EventCard extends StatelessWidget {
                     fontFamily: 'Open Sans',
                     fontSize: 12,
                     fontWeight: FontWeight.w400,
+                  ),
+                ),
+                SizedBox(height: 14),
+                Container(
+                  width: double.infinity,
+                  alignment: Alignment.center,
+                  padding: EdgeInsets.symmetric(vertical: 8),
+                  decoration: BoxDecoration(
+                    color: Color(0xFFDA1E3D),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(
+                    'Detail',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'Open Sans',
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                    ),
                   ),
                 ),
               ],

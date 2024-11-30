@@ -1,21 +1,16 @@
 import 'package:flutter/material.dart';
 
 class BannerWidget extends StatelessWidget {
-  const BannerWidget({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 388,
+    return Container(
       height: 250,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('lib/assets/images/banner-homepage-1.jpg'),
-            fit: BoxFit.cover,
-          ),
-          borderRadius: BorderRadius.circular(8),
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('lib/assets/images/banner-homepage-1.jpg.jpg'),
+          fit: BoxFit.cover,
         ),
+        borderRadius: BorderRadius.circular(8),
       ),
     );
   }
