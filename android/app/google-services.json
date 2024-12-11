@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "227338599972",
+    "project_id": "tekber-markas",
+    "storage_bucket": "tekber-markas.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:227338599972:android:6e00636a618c665865e2b1",
+        "android_client_info": {
+          "package_name": "com.example.tekber_markas"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCfVla9c53XjvVZiiwVjqNsEKy2DbJJn0I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
