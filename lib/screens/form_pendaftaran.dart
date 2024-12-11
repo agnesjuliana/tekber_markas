@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FormPendaftaranPage extends StatefulWidget {
   @override
@@ -12,6 +13,66 @@ class _FormPendaftaranPageState extends State<FormPendaftaranPage> {
   final TextEditingController _cityController = TextEditingController();
   final TextEditingController _organizationController = TextEditingController();
   final TextEditingController _positionController = TextEditingController();
+
+  // Fungsi untuk menyimpan data ke Firestore
+  Future<void> _submitToFirestore() async {
+    final data = {
+      'name': _nameController.text,
+      'phone': _phoneController.text,
+      'city': _cityController.text,
+      'organization': _organizationController.text,
+      'position': _positionController.text,
+      'timestamp': FieldValue.serverTimestamp(),
+    };
+
+    try {
+      // Simpan data ke koleksi "registrations"
+      await FirebaseFirestore.instance.collection('registrations').add(data);
+      _showSuccessDialog();
+    } catch (e) {
+      _showErrorDialog(e.toString());
+    }
+  }
+
+  void _showSuccessDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Icon(Icons.check_circle, color: Colors.green, size: 50),
+        content: Text(
+          'Kamu telah terdaftar dalam kegiatan ini!',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 18),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showErrorDialog(String error) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Icon(Icons.error, color: Colors.red, size: 50),
+        content: Text(
+          'Terjadi kesalahan: $error',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 18),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +89,7 @@ class _FormPendaftaranPageState extends State<FormPendaftaranPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Image.asset('lib/assets/images/markas_logo.png'), // Ganti dengan logo acara Anda
+                Image.asset('lib/assets/images/markas_logo.png'),
                 SizedBox(height: 20),
                 Text(
                   'Kelas Intensif Hustler',
@@ -62,8 +123,7 @@ class _FormPendaftaranPageState extends State<FormPendaftaranPage> {
                     fillColor: Colors.grey[200],
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                   ),
-                  validator: (value) =>
-                  value!.isEmpty ? 'Nomor WhatsApp wajib diisi' : null,
+                  validator: (value) => value!.isEmpty ? 'Nomor WhatsApp wajib diisi' : null,
                 ),
                 SizedBox(height: 16),
 
@@ -91,8 +151,7 @@ class _FormPendaftaranPageState extends State<FormPendaftaranPage> {
                     fillColor: Colors.grey[200],
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                   ),
-                  validator: (value) =>
-                  value!.isEmpty ? 'Instansi wajib diisi' : null,
+                  validator: (value) => value!.isEmpty ? 'Instansi wajib diisi' : null,
                 ),
                 SizedBox(height: 16),
 
@@ -115,25 +174,7 @@ class _FormPendaftaranPageState extends State<FormPendaftaranPage> {
                   child: ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        // Tampilkan dialog konfirmasi
-                        showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: Icon(Icons.check_circle,
-                                color: Colors.green, size: 50),
-                            content: Text(
-                              'Kamu telah terdaftar dalam kegiatan ini!',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 18),
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.pop(context),
-                                child: Text('OK'),
-                              ),
-                            ],
-                          ),
-                        );
+                        _submitToFirestore();
                       }
                     },
                     child: Text('Submit'),
