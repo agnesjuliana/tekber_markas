@@ -83,34 +83,34 @@ class ProfileScreen extends StatelessWidget {
               const Divider(),
               const SizedBox(height: 8),
               // Tab Event dan Sertifikat
-        DefaultTabController(
-          length: 2,
-          child: Column(
-            children: [
-              const TabBar(
-                labelColor: Colors.red,
-                unselectedLabelColor: Colors.grey,
-                tabs: [
-                  Tab(text: 'Event'),
-                  Tab(text: 'Sertifikat'),
-                ],
-              ),
-              const SizedBox(height: 12),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.3, // Tinggi konten tab
-                child: TabBarView(
+              DefaultTabController(
+                length: 2,
+                child: Column(
                   children: [
-                    // Konten Event
-                    _buildEventList(context), // Kirimkan context di sini
-                    // Konten Sertifikat
-                    _buildCertificateList(),
+                    const TabBar(
+                      labelColor: Colors.red,
+                      unselectedLabelColor: Colors.grey,
+                      tabs: [
+                        Tab(text: 'Event'),
+                        Tab(text: 'Sertifikat'),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.3, // Tinggi konten tab
+                      child: TabBarView(
+                        children: [
+                          // Konten Event
+                          _buildEventList(context), // Kirimkan context di sini
+                          // Konten Sertifikat
+                          _buildCertificateList(),
+                        ],
+                      ),
+                    )
                   ],
                 ),
-              )
+              ),
             ],
-          ),
-        ),
-        ],
           ),
         ),
       ),
@@ -246,116 +246,116 @@ class ProfileScreen extends StatelessWidget {
   Widget _buildStatCard(String text, Color color) {
     return Container(
       padding:
-          const EdgeInsets.symmetric(horizontal: 12, vertical: 6), // Padding dalam card statistik
+      const EdgeInsets.symmetric(horizontal: 12, vertical: 6), // Padding dalam card statistik
       decoration:
-          BoxDecoration(color: color.withOpacity(0.1), borderRadius:
-           BorderRadius.circular(8)),
+      BoxDecoration(color: color.withOpacity(0.1), borderRadius:
+      BorderRadius.circular(8)),
       child:
-       Text(text, style:
-       TextStyle(color:
-       color)),
+      Text(text, style:
+      TextStyle(color:
+      color)),
     );
   }
 
-  
 
-Widget _buildCertificateList() {
-  return ListView.builder(
-    itemCount: 4, // Jumlah sertifikat (sesuaikan)
-    itemBuilder: (context, index) {
-      return Card(
-        margin: const EdgeInsets.symmetric(vertical: 8), // Margin antar card sertifikat
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12), // Membuat sudut card melengkung
-        ),
-        elevation: 2, // Memberikan bayangan lembut pada card
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  // Gambar Sertifikat
-                  Image.asset(
-                    'lib/assets/images/certificate_icon.png', // Gambar sertifikat (sesuaikan)
-                    width: 40,
-                  ),
-                  const SizedBox(width: 16),
-                  // Nama Sertifikasi dan Detail
-                  const Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Sertifikasi Hipster Pemula Episode 1',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
-                        SizedBox(height: 4),
-                        Row(
-                          children: [
-                            Icon(Icons.school, size: 16, color: Colors.grey), // Ikon sekolah
-                            SizedBox(width: 4),
-                            Text('Sekolah Beta', style: TextStyle(color: Colors.grey)),
-                          ],
-                        ),
-                        SizedBox(height: 4),
-                        Row(
-                          children: [
-                            Icon(Icons.calendar_today, size: 16, color: Colors.grey), // Ikon kalender
-                            SizedBox(width: 4),
-                            Text('Diterbitkan Oktober 2023', style: TextStyle(color: Colors.grey)),
-                          ],
-                        ),
-                      ],
+
+  Widget _buildCertificateList() {
+    return ListView.builder(
+      itemCount: 4, // Jumlah sertifikat (sesuaikan)
+      itemBuilder: (context, index) {
+        return Card(
+          margin: const EdgeInsets.symmetric(vertical: 8), // Margin antar card sertifikat
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12), // Membuat sudut card melengkung
+          ),
+          elevation: 2, // Memberikan bayangan lembut pada card
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    // Gambar Sertifikat
+                    Image.asset(
+                      'lib/assets/images/certificate_icon.png', // Gambar sertifikat (sesuaikan)
+                      width: 40,
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              const Divider(), // Garis pemisah antara informasi sertifikat dan tombol
-              const SizedBox(height: 8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red, // Warna tombol merah
-                      shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(8), // Membuat sudut tombol melengkung
+                    const SizedBox(width: 16),
+                    // Nama Sertifikasi dan Detail
+                    const Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Sertifikasi Hipster Pemula Episode 1',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          SizedBox(height: 4),
+                          Row(
+                            children: [
+                              Icon(Icons.school, size: 16, color: Colors.grey), // Ikon sekolah
+                              SizedBox(width: 4),
+                              Text('Sekolah Beta', style: TextStyle(color: Colors.grey)),
+                            ],
+                          ),
+                          SizedBox(height: 4),
+                          Row(
+                            children: [
+                              Icon(Icons.calendar_today, size: 16, color: Colors.grey), // Ikon kalender
+                              SizedBox(width: 4),
+                              Text('Diterbitkan Oktober 2023', style: TextStyle(color: Colors.grey)),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
-                    child:
-                        const Text('Download sertifikat', style: TextStyle(color: Colors.white)),
-                  ),
-                  OutlinedButton(
-                    onPressed: () {},
-                    style: OutlinedButton.styleFrom(
-                      side:
-                          const BorderSide(color: Colors.red), // Warna garis luar merah
-                      shape:
-                          RoundedRectangleBorder(borderRadius:
-                           BorderRadius.circular(8)), // Sudut melengkung untuk tombol outline
+                  ],
+                ),
+                const SizedBox(height: 16),
+                const Divider(), // Garis pemisah antara informasi sertifikat dan tombol
+                const SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red, // Warna tombol merah
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                          BorderRadius.circular(8), // Membuat sudut tombol melengkung
+                        ),
+                      ),
+                      child:
+                      const Text('Download sertifikat', style: TextStyle(color: Colors.white)),
                     ),
-                    child:
-                        const Text('Cantumkan ke LinkedIn', style:
-                         TextStyle(color:
-                         Colors.red)), // Teks berwarna merah
-                  ),
-                ],
-              ),
-            ],
+                    OutlinedButton(
+                      onPressed: () {},
+                      style: OutlinedButton.styleFrom(
+                        side:
+                        const BorderSide(color: Colors.red), // Warna garis luar merah
+                        shape:
+                        RoundedRectangleBorder(borderRadius:
+                        BorderRadius.circular(8)), // Sudut melengkung untuk tombol outline
+                      ),
+                      child:
+                      const Text('Cantumkan ke LinkedIn', style:
+                      TextStyle(color:
+                      Colors.red)), // Teks berwarna merah
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
-        ),
-      );
-    },
-  );
-}
+        );
+      },
+    );
+  }
 // Membuat bottom navigation bar.
 
 }

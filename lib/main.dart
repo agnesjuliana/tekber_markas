@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true, // Material Design 3
       ),
       debugShowCheckedModeBanner: false, // Menghapus banner debug
-      home: HomePage(), // Halaman awal
+      home: StartScreen(), // Halaman awal
     );
   }
 }

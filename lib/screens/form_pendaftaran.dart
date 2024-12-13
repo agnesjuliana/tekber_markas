@@ -79,7 +79,7 @@ class _FormPendaftaranPageState extends State<FormPendaftaranPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Form Pendaftaran'),
-        backgroundColor: Colors.red,
+        backgroundColor: Color(0xFFDA1E3D),
       ),
       body: SingleChildScrollView(
         child: Padding(

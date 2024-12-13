@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tekber_markas/screens/form_pendaftaran.dart'; 
+import 'package:tekber_markas/screens/form_pendaftaran.dart';
 
 class DeskripsiAcaraPage extends StatelessWidget {
   @override
@@ -7,14 +7,14 @@ class DeskripsiAcaraPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('MARKAS'),
-        backgroundColor: Colors.red,
+        backgroundColor: Color(0xFFDA1E3D),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Image.asset('lib/assets/images/event_image.png'), 
+            Image.asset('lib/assets/images/event_image.png'),
             SizedBox(height: 20),
             Text(
               'Kelas Intensif Hustler',
@@ -52,7 +52,6 @@ class DeskripsiAcaraPage extends StatelessWidget {
             Center(
               child: ElevatedButton(
                 onPressed: () {
-                  
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => FormPendaftaranPage()),
@@ -60,7 +59,7 @@ class DeskripsiAcaraPage extends StatelessWidget {
                 },
                 child: Text('Daftar'),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
+                  backgroundColor: Color(0xFFDA1E3D),
                   padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                 ),
               ),

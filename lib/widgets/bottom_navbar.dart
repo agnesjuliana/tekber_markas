@@ -28,25 +28,25 @@ class BottomNavBar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           _NavBarItem(
-            assetPath: 'lib/assets/icons/home.png', // Still passing string here
+            assetPath: 'lib/assets/icons/home.png',
             label: 'Home',
             isActive: currentIndex == 0,
             onTap: () => onTap(0),
           ),
           _NavBarItem(
-            assetPath: 'lib/assets/icons/event.png', // Still passing string here
+            assetPath: 'lib/assets/icons/event.png',
             label: 'Event',
             isActive: currentIndex == 1,
             onTap: () => onTap(1),
           ),
           _NavBarItem(
-            assetPath: 'lib/assets/icons/calendar.png', // Still passing string here
-            label: 'Calendar',
+            assetPath: 'lib/assets/icons/calendar.png',
+            label: 'Favorite',
             isActive: currentIndex == 2,
             onTap: () => onTap(2),
           ),
           _NavBarItem(
-            assetPath: 'lib/assets/icons/profile.png', // Still passing string here
+            assetPath: 'lib/assets/icons/profile.png',
             label: 'Profile',
             isActive: currentIndex == 3,
             onTap: () => onTap(3),
@@ -58,10 +58,11 @@ class BottomNavBar extends StatelessWidget {
 }
 
 class _NavBarItem extends StatelessWidget {
-  final String assetPath; // This is still a string holding the path to the image
+  final String assetPath;
   final String label;
   final bool isActive;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
+  final bool isDisabled; // Flag for disabling interactions
 
   const _NavBarItem({
     Key? key,
@@ -69,23 +70,24 @@ class _NavBarItem extends StatelessWidget {
     required this.label,
     required this.isActive,
     required this.onTap,
+    this.isDisabled = false, // Default is false (not disabled)
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: isDisabled ? null : onTap, // Disable if isDisabled is true
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Container(
             width: 24,
             height: 24,
             alignment: Alignment.center,
             child: Image.asset(
-              assetPath, // This is where we call Image.asset() with the path from assetPath
-              color: Colors.white, // Apply a white tint if needed
+              assetPath,
+              color: isDisabled ? Colors.grey : Colors.white, // Change icon color if disabled
               fit: BoxFit.contain,
             ),
           ),
@@ -107,8 +109,8 @@ class _NavBarItem extends StatelessWidget {
             padding: const EdgeInsets.only(top: 8.0),
             child: Text(
               label,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: isDisabled ? Colors.grey : Colors.white, // Change text color if disabled
                 fontFamily: "Open Sans",
                 fontSize: 12,
                 fontWeight: FontWeight.w600,

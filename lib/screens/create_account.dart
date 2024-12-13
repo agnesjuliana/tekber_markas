@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tekber_markas/screens/login_account.dart';
 import 'package:tekber_markas/widgets/input_field_widget.dart';
 import 'package:tekber_markas/widgets/logo_widget.dart';
+import 'package:google_fonts/google_fonts.dart'; // Mengimpor google_fonts
 
 class CreateAccountScreen extends StatelessWidget {
   const CreateAccountScreen({super.key});
@@ -20,9 +21,9 @@ class CreateAccountScreen extends StatelessWidget {
                 const SizedBox(height: 20),
                 const LogoWidget(),
                 const SizedBox(height: 16),
-                const Text(
+                Text(
                   'Buat Akun',
-                  style: TextStyle(
+                  style: GoogleFonts.openSans( // Menggunakan Open Sans dari Google Fonts
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                   ),
@@ -63,15 +64,15 @@ class CreateAccountScreen extends StatelessWidget {
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor:
-                        const Color(0xFFDA1E3D), // Custom red color
+                    const Color(0xFFDA1E3D), // Custom red color
                     minimumSize: const Size(double.infinity, 48),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                   ),
-                  child: const Text(
+                  child: Text(
                     'Daftar',
-                    style: TextStyle(
+                    style: GoogleFonts.openSans( // Menggunakan Open Sans di tombol Daftar
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
@@ -82,9 +83,11 @@ class CreateAccountScreen extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
+                    Text(
                       'Sudah punya akun?',
-                      style: TextStyle(fontSize: 14),
+                      style: GoogleFonts.openSans( // Menggunakan Open Sans di teks ini
+                        fontSize: 14,
+                      ),
                     ),
                     const SizedBox(width: 4),
                     GestureDetector(
@@ -96,11 +99,11 @@ class CreateAccountScreen extends StatelessWidget {
                           ),
                         );
                       },
-                      child: const Text(
+                      child: Text(
                         'Masuk',
-                        style: TextStyle(
+                        style: GoogleFonts.openSans( // Menggunakan Open Sans di teks ini
                           fontSize: 14,
-                          color: Color(0xFFDA1E3D), // Custom red color
+                          color: const Color(0xFFDA1E3D), // Custom red color
                           fontWeight: FontWeight.bold,
                         ),
                       ),

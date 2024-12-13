@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:tekber_markas/screens/create_account.dart';
+import 'package:tekber_markas/screens/homepage.dart';
 import 'package:tekber_markas/widgets/input_field_widget.dart';
 import 'package:tekber_markas/widgets/logo_widget.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class LoginAccountScreen extends StatelessWidget {
   const LoginAccountScreen({super.key});
@@ -41,18 +43,26 @@ class LoginAccountScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 32),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    // Arahkan ke HomePage setelah klik Masuk
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => HomePage(),
+                      ),
+                    );
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor:
-                        const Color(0xFFDA1E3D), // Custom red color
+                    const Color(0xFFDA1E3D), // Custom red color
                     minimumSize: const Size(double.infinity, 48),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                   ),
-                  child: const Text(
+                  child: Text(
                     'Masuk',
-                    style: TextStyle(
+                    style: GoogleFonts.openSans( // Gunakan font Open Sans dari Google Fonts
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
@@ -70,7 +80,7 @@ class LoginAccountScreen extends StatelessWidget {
                     const SizedBox(width: 4),
                     GestureDetector(
                       onTap: () {
-                        // Handle navigation to login
+                        // Handle navigation to CreateAccountScreen
                         Navigator.push(
                           context,
                           MaterialPageRoute(
