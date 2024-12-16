@@ -10,6 +10,7 @@ class ProfileEditScreen extends StatefulWidget {
 class _ProfileEditScreenState extends State<ProfileEditScreen> {
   final TextEditingController fullNameController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
+  final TextEditingController aboutMeController = TextEditingController(); // Controller untuk "Tentang Saya"
   bool isLoading = false;
 
   @override
@@ -31,6 +32,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
           setState(() {
             fullNameController.text = userDoc['name'] ?? '';
             phoneController.text = userDoc['number'] ?? '';
+            aboutMeController.text = userDoc['about'] ?? ''; // Muat data "Tentang Saya"
           });
         }
       }
@@ -51,8 +53,8 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
         await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
           'name': fullNameController.text.trim(),
           'number': phoneController.text.trim(),
+          'about': aboutMeController.text.trim(), // Simpan "Tentang Saya"
         });
-
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Profil berhasil diperbarui!")),
         );
@@ -125,6 +127,11 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
             title: 'Nomor Handphone *',
             controller: phoneController,
             hintText: '081234567890',
+          ),
+          _inputField(
+            title: 'Tentang Saya',  // Menambahkan input field untuk "Tentang Saya"
+            controller: aboutMeController,
+            hintText: 'Ceritakan tentang diri Anda...',
           ),
           SizedBox(height: 30),
           // Tombol Simpan Perubahan
