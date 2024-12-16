@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:tekber_markas/widgets/event_card.dart'; // Make sure this is imported
 class EventScreen extends StatefulWidget {
   @override
   _EventScreenState createState() => _EventScreenState();
 }
-
 class _EventScreenState extends State<EventScreen> {
   String activeTab = 'All';
-
   final List<String> tabs = ['All', 'Hustler', 'Hacker', 'Hipster'];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -86,9 +84,7 @@ class _EventScreenState extends State<EventScreen> {
                 ),
               ],
             ),
-
             const SizedBox(height: 16),
-
             // Tab Buttons
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
@@ -127,20 +123,36 @@ class _EventScreenState extends State<EventScreen> {
                 }).toList(),
               ),
             ),
-
             const SizedBox(height: 16),
-
             // Section Content
             Expanded(
-              child: ListView(
-                children: [
-                  if (activeTab == 'All' || activeTab == 'Hustler')
-                    buildSection('Hustler', 'assets/images/hustler.jpg'),
-                  if (activeTab == 'All' || activeTab == 'Hacker')
-                    buildSection('Hacker', 'assets/images/hacker.jpg'),
-                  if (activeTab == 'All' || activeTab == 'Hipster')
-                    buildSection('Hipster', 'assets/images/hipster.jpg'),
-                ],
+              child: StreamBuilder(
+                stream: FirebaseFirestore.instance
+                    .collection('event')
+                    .where('category', isEqualTo: activeTab == 'All' ? null : activeTab)
+                    .snapshots(),
+                builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (snapshot.hasError) {
+                    return Center(child: Text("Error memuat data event: ${snapshot.error}"));
+                  }
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  final events = snapshot.data!.docs;
+                  if (events.isEmpty) {
+                    return Center(child: Text("Tidak ada event tersedia."));
+                  }
+                  return ListView(
+                    children: [
+                      if (activeTab == 'All' || activeTab == 'Hustler')
+                        buildSection('Hustler', events),
+                      if (activeTab == 'All' || activeTab == 'Hacker')
+                        buildSection('Hacker', events),
+                      if (activeTab == 'All' || activeTab == 'Hipster')
+                        buildSection('Hipster', events),
+                    ],
+                  );
+                },
               ),
             ),
           ],
@@ -148,9 +160,13 @@ class _EventScreenState extends State<EventScreen> {
       ),
     );
   }
-
-  Widget buildSection(String title, String imagePath) {
-    return Column(
+  Widget buildSection(String title, List<QueryDocumentSnapshot> events) {
+    final categoryEvents = events
+        .where((event) => event['category'] == title)
+        .toList();
+    return categoryEvents.isEmpty
+        ? Container()
+        : Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
@@ -168,26 +184,11 @@ class _EventScreenState extends State<EventScreen> {
           height: 200,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: 3,
+            itemCount: categoryEvents.length,
             itemBuilder: (context, index) {
               return Padding(
                 padding: const EdgeInsets.only(right: 16),
-                child: Card(
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Container(
-                    width: 160,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      image: DecorationImage(
-                        image: AssetImage(imagePath),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                ),
+                child: EventCard(eventData: categoryEvents[index]),
               );
             },
           ),

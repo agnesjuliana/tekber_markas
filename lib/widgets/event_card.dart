@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:tekber_markas/screens/deskripsi_acara.dart';
 
 class EventCard extends StatelessWidget {
-  final QueryDocumentSnapshot eventData;
+  final DocumentSnapshot eventData; // Ubah dari QueryDocumentSnapshot ke DocumentSnapshot
 
   const EventCard({super.key, required this.eventData});
 
@@ -10,7 +11,13 @@ class EventCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        print("Event clicked: ${eventData['title']}");
+        // Navigasi ke DeskripsiAcaraPage sambil mengirimkan eventId
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DeskripsiAcaraPage(eventId: eventData.id),
+          ),
+        );
       },
       child: Container(
         width: 220,

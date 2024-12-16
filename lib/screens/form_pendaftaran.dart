@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+import 'homepage.dart';
 
 class FormPendaftaranPage extends StatefulWidget {
+  final String eventId; // Terima eventId dari DeskripsiAcaraPage
+
+  const FormPendaftaranPage({super.key, required this.eventId});
+
   @override
   _FormPendaftaranPageState createState() => _FormPendaftaranPageState();
 }
@@ -14,9 +21,34 @@ class _FormPendaftaranPageState extends State<FormPendaftaranPage> {
   final TextEditingController _organizationController = TextEditingController();
   final TextEditingController _positionController = TextEditingController();
 
-  // Fungsi untuk menyimpan data ke Firestore
+  // Data pengguna yang sedang login
+  String currentUserId = '';
+  String currentUserEmail = '';
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserData();
+  }
+
+  // Ambil data pengguna yang sedang login
+  Future<void> fetchUserData() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      setState(() {
+        currentUserId = user.uid;
+        currentUserEmail = user.email ?? '';
+        _nameController.text = ''; // Opsional: Jika nama user ada di Firestore, bisa diisi otomatis
+      });
+    }
+  }
+
+  // Fungsi untuk menyimpan data pendaftaran ke Firestore
   Future<void> _submitToFirestore() async {
     final data = {
+      'userId': currentUserId,
+      'email': currentUserEmail,
+      'eventId': widget.eventId, // Simpan ID event yang didaftarkan
       'name': _nameController.text,
       'phone': _phoneController.text,
       'city': _cityController.text,
@@ -46,13 +78,20 @@ class _FormPendaftaranPageState extends State<FormPendaftaranPage> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () {
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => HomePage()),
+                    (route) => false, // Hapus semua rute sebelumnya
+              );
+            },
             child: Text('OK'),
           ),
         ],
       ),
     );
   }
+
 
   void _showErrorDialog(String error) {
     showDialog(
@@ -89,24 +128,12 @@ class _FormPendaftaranPageState extends State<FormPendaftaranPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Image.asset('lib/assets/images/markas_logo.png'),
-                SizedBox(height: 20),
-                Text(
-                  'Kelas Intensif Hustler',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  'by 1000 Startup Markas Surabaya',
-                  style: TextStyle(fontSize: 16, color: Colors.grey),
-                ),
                 // Nama
                 Text('Nama', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                 TextFormField(
                   controller: _nameController,
                   decoration: InputDecoration(
                     hintText: 'Masukkan nama Anda',
-                    filled: true,
-                    fillColor: Colors.grey[200],
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                   ),
                   validator: (value) => value!.isEmpty ? 'Nama wajib diisi' : null,
@@ -119,8 +146,6 @@ class _FormPendaftaranPageState extends State<FormPendaftaranPage> {
                   controller: _phoneController,
                   decoration: InputDecoration(
                     hintText: 'Masukkan nomor WhatsApp',
-                    filled: true,
-                    fillColor: Colors.grey[200],
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                   ),
                   validator: (value) => value!.isEmpty ? 'Nomor WhatsApp wajib diisi' : null,
@@ -133,8 +158,6 @@ class _FormPendaftaranPageState extends State<FormPendaftaranPage> {
                   controller: _cityController,
                   decoration: InputDecoration(
                     hintText: 'Masukkan domisili Anda',
-                    filled: true,
-                    fillColor: Colors.grey[200],
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                   ),
                   validator: (value) => value!.isEmpty ? 'Domisili wajib diisi' : null,
@@ -147,11 +170,8 @@ class _FormPendaftaranPageState extends State<FormPendaftaranPage> {
                   controller: _organizationController,
                   decoration: InputDecoration(
                     hintText: 'Masukkan instansi Anda',
-                    filled: true,
-                    fillColor: Colors.grey[200],
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                   ),
-                  validator: (value) => value!.isEmpty ? 'Instansi wajib diisi' : null,
                 ),
                 SizedBox(height: 16),
 
@@ -161,11 +181,8 @@ class _FormPendaftaranPageState extends State<FormPendaftaranPage> {
                   controller: _positionController,
                   decoration: InputDecoration(
                     hintText: 'Masukkan posisi Anda',
-                    filled: true,
-                    fillColor: Colors.grey[200],
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                   ),
-                  validator: (value) => value!.isEmpty ? 'Posisi wajib diisi' : null,
                 ),
                 SizedBox(height: 20),
 

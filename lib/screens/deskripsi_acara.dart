@@ -1,60 +1,99 @@
 import 'package:flutter/material.dart';
-import 'package:tekber_markas/screens/form_pendaftaran.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class DeskripsiAcaraPage extends StatelessWidget {
+import 'form_pendaftaran.dart';
+
+class DeskripsiAcaraPage extends StatefulWidget {
+  final String eventId;
+
+  const DeskripsiAcaraPage({super.key, required this.eventId});
+
+  @override
+  _DeskripsiAcaraPageState createState() => _DeskripsiAcaraPageState();
+}
+
+class _DeskripsiAcaraPageState extends State<DeskripsiAcaraPage> {
+  DocumentSnapshot? eventData;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchEventData();
+  }
+
+  // Fungsi untuk mengambil data event berdasarkan eventId
+  Future<void> fetchEventData() async {
+    try {
+      DocumentSnapshot doc = await FirebaseFirestore.instance
+          .collection('event')
+          .doc(widget.eventId)
+          .get();
+
+      setState(() {
+        eventData = doc;
+      });
+    } catch (e) {
+      print("Error fetching event data: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (eventData == null) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('MARKAS'),
+          backgroundColor: Color(0xFFDA1E3D),
+        ),
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    // Ambil data dari Firestore
+    String title = eventData!['title'] ?? 'Judul Tidak Tersedia';
+    String bannerUrl = eventData!['bannerUrl'] ?? '';
+    String description = eventData!['description'] ?? '';
+    String date = eventData!['date'] != null
+        ? eventData!['date'].toDate().toString()
+        : 'Tanggal Tidak Tersedia';
+    String location = eventData!['location'] ?? '';
+    String organizer = eventData!['organizer'] ?? '';
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('MARKAS'),
+        title: Text('Detail Acara'),
         backgroundColor: Color(0xFFDA1E3D),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Image.asset('lib/assets/images/event_image.png'),
+            Image.network(bannerUrl, height: 200, fit: BoxFit.cover),
             SizedBox(height: 20),
             Text(
-              'Kelas Intensif Hustler',
+              title,
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
-            Text(
-              'by 1000 Startup Markas Surabaya',
-              style: TextStyle(fontSize: 16, color: Colors.grey),
-            ),
             SizedBox(height: 10),
-            Row(
-              children: [
-                Icon(Icons.calendar_today, color: Colors.grey),
-                SizedBox(width: 8),
-                Text('Senin, 1 November 2023'),
-              ],
-            ),
-            Row(
-              children: [
-                Icon(Icons.access_time, color: Colors.grey),
-                SizedBox(width: 8),
-                Text('18:00 - 21:00 WIB'),
-              ],
-            ),
+            Text('Penyelenggara: $organizer'),
+            SizedBox(height: 10),
+            Text('Lokasi: $location'),
+            SizedBox(height: 10),
+            Text('Tanggal: $date'),
             SizedBox(height: 20),
-            Text(
-              '1000 Start Up Digital, program by Kominfo\n\n'
-                  'Mempersembahkan "Sekolah Beta Intensif - Hustler" Workshop & Coaching Class: '
-                  '1 November - 30 November 2023 (Setiap Senin & Kamis)\n\n'
-                  'Lokasi: MARKAS Surabaya - Jl. Sidosermo II KAV F-106 Sidosermo - Wonocolo\n\n'
-                  'Bersama Majukan Negeri Melalui Teknologi, Karena Indonesia Maju!',
-              style: TextStyle(fontSize: 16),
-            ),
-            SizedBox(height: 20),
+            Text(description),
+            SizedBox(height: 30),
             Center(
               child: ElevatedButton(
                 onPressed: () {
+                  print("Registrasi Event: ${widget.eventId}");
+                  // Navigasi ke FormPendaftaranPage dan bawa eventId
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => FormPendaftaranPage()),
+                    MaterialPageRoute(
+                      builder: (context) => FormPendaftaranPage(eventId: widget.eventId),
+                    ),
                   );
                 },
                 child: Text('Daftar'),
@@ -64,6 +103,7 @@ class DeskripsiAcaraPage extends StatelessWidget {
                 ),
               ),
             ),
+
           ],
         ),
       ),
