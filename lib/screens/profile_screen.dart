@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tekber_markas/screens/setting_screen.dart';
 import 'deskripsi_acara.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -22,7 +23,12 @@ class ProfileScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.settings, color: Colors.black),
             onPressed: () {
-              // Aksi ketika tombol settings ditekan
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SettingsScreen(),
+                ),
+              );
             },
           ),
         ],
@@ -72,8 +78,7 @@ class ProfileScreen extends StatelessWidget {
               // Tentang Saya
               const Text(
                 'Tentang saya',
-                style:
-                TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
               const Text(
@@ -97,7 +102,8 @@ class ProfileScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.3, // Tinggi konten tab
+                      height: MediaQuery.of(context).size.height *
+                          0.3, // Tinggi konten tab
                       child: TabBarView(
                         children: [
                           // Konten Event
@@ -114,8 +120,7 @@ class ProfileScreen extends StatelessWidget {
           ),
         ),
       ),
-      bottomNavigationBar:
-      _buildBottomNavigationBar(), // Bottom navigation bar
+      bottomNavigationBar: _buildBottomNavigationBar(), // Bottom navigation bar
     );
   }
 
@@ -140,8 +145,6 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-
-
   Widget _buildEventCard({
     required BuildContext context,
     required String title,
@@ -153,8 +156,8 @@ class ProfileScreen extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 8),
       // Margin antar card event
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(
-            12), // Membuat sudut card melengkung
+        borderRadius:
+            BorderRadius.circular(12), // Membuat sudut card melengkung
       ),
       elevation: 2,
       // Memberikan bayangan lembut pada card
@@ -195,8 +198,8 @@ class ProfileScreen extends StatelessWidget {
                 // Tanggal Event dengan ikon kalender berwarna merah
                 Row(
                   children: [
-                    const Icon(
-                        Icons.calendar_today, size: 16, color: Colors.red),
+                    const Icon(Icons.calendar_today,
+                        size: 16, color: Colors.red),
                     // Ikon kalender merah
                     const SizedBox(width: 4),
                     Text(date, style: const TextStyle(color: Colors.grey)),
@@ -242,31 +245,27 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-
   Widget _buildStatCard(String text, Color color) {
     return Container(
-      padding:
-      const EdgeInsets.symmetric(horizontal: 12, vertical: 6), // Padding dalam card statistik
-      decoration:
-      BoxDecoration(color: color.withOpacity(0.1), borderRadius:
-      BorderRadius.circular(8)),
-      child:
-      Text(text, style:
-      TextStyle(color:
-      color)),
+      padding: const EdgeInsets.symmetric(
+          horizontal: 12, vertical: 6), // Padding dalam card statistik
+      decoration: BoxDecoration(
+          color: color.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(8)),
+      child: Text(text, style: TextStyle(color: color)),
     );
   }
-
-
 
   Widget _buildCertificateList() {
     return ListView.builder(
       itemCount: 4, // Jumlah sertifikat (sesuaikan)
       itemBuilder: (context, index) {
         return Card(
-          margin: const EdgeInsets.symmetric(vertical: 8), // Margin antar card sertifikat
+          margin: const EdgeInsets.symmetric(
+              vertical: 8), // Margin antar card sertifikat
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12), // Membuat sudut card melengkung
+            borderRadius:
+                BorderRadius.circular(12), // Membuat sudut card melengkung
           ),
           elevation: 2, // Memberikan bayangan lembut pada card
           child: Padding(
@@ -297,17 +296,22 @@ class ProfileScreen extends StatelessWidget {
                           SizedBox(height: 4),
                           Row(
                             children: [
-                              Icon(Icons.school, size: 16, color: Colors.grey), // Ikon sekolah
+                              Icon(Icons.school,
+                                  size: 16, color: Colors.grey), // Ikon sekolah
                               SizedBox(width: 4),
-                              Text('Sekolah Beta', style: TextStyle(color: Colors.grey)),
+                              Text('Sekolah Beta',
+                                  style: TextStyle(color: Colors.grey)),
                             ],
                           ),
                           SizedBox(height: 4),
                           Row(
                             children: [
-                              Icon(Icons.calendar_today, size: 16, color: Colors.grey), // Ikon kalender
+                              Icon(Icons.calendar_today,
+                                  size: 16,
+                                  color: Colors.grey), // Ikon kalender
                               SizedBox(width: 4),
-                              Text('Diterbitkan Oktober 2023', style: TextStyle(color: Colors.grey)),
+                              Text('Diterbitkan Oktober 2023',
+                                  style: TextStyle(color: Colors.grey)),
                             ],
                           ),
                         ],
@@ -326,26 +330,25 @@ class ProfileScreen extends StatelessWidget {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red, // Warna tombol merah
                         shape: RoundedRectangleBorder(
-                          borderRadius:
-                          BorderRadius.circular(8), // Membuat sudut tombol melengkung
+                          borderRadius: BorderRadius.circular(
+                              8), // Membuat sudut tombol melengkung
                         ),
                       ),
-                      child:
-                      const Text('Download sertifikat', style: TextStyle(color: Colors.white)),
+                      child: const Text('Download sertifikat',
+                          style: TextStyle(color: Colors.white)),
                     ),
                     OutlinedButton(
                       onPressed: () {},
                       style: OutlinedButton.styleFrom(
-                        side:
-                        const BorderSide(color: Colors.red), // Warna garis luar merah
-                        shape:
-                        RoundedRectangleBorder(borderRadius:
-                        BorderRadius.circular(8)), // Sudut melengkung untuk tombol outline
+                        side: const BorderSide(
+                            color: Colors.red), // Warna garis luar merah
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                                8)), // Sudut melengkung untuk tombol outline
                       ),
-                      child:
-                      const Text('Cantumkan ke LinkedIn', style:
-                      TextStyle(color:
-                      Colors.red)), // Teks berwarna merah
+                      child: const Text('Cantumkan ke LinkedIn',
+                          style: TextStyle(
+                              color: Colors.red)), // Teks berwarna merah
                     ),
                   ],
                 ),
@@ -357,8 +360,6 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 // Membuat bottom navigation bar.
-
 }
 
-_buildBottomNavigationBar() {
-}
+_buildBottomNavigationBar() {}
