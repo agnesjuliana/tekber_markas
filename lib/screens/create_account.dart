@@ -2,17 +2,67 @@ import 'package:flutter/material.dart';
 import 'package:tekber_markas/screens/login_account.dart';
 import 'package:tekber_markas/widgets/input_field_widget.dart';
 import 'package:tekber_markas/widgets/logo_widget.dart';
-import 'package:google_fonts/google_fonts.dart'; // Mengimpor google_fonts
+import 'package:google_fonts/google_fonts.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class CreateAccountScreen extends StatelessWidget {
+class CreateAccountScreen extends StatefulWidget {
   const CreateAccountScreen({super.key});
+
+  @override
+  _CreateAccountScreenState createState() => _CreateAccountScreenState();
+}
+
+class _CreateAccountScreenState extends State<CreateAccountScreen> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+
+  bool isLoading = false; // Untuk loading indicator
+
+  // Fungsi untuk membuat akun baru
+  Future<void> createAccount() async {
+    try {
+      print("Membuat akun...");
+
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+      );
+
+      print("Akun berhasil dibuat! Navigasi ke LoginAccountScreen...");
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const LoginAccountScreen(),
+          ),
+        );
+      }
+    } catch (e) {
+      print("Error: $e");
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Error'),
+          content: Text(e.toString()),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          // Added for scrollable behavior
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Column(
@@ -23,56 +73,56 @@ class CreateAccountScreen extends StatelessWidget {
                 const SizedBox(height: 16),
                 Text(
                   'Buat Akun',
-                  style: GoogleFonts.openSans( // Menggunakan Open Sans dari Google Fonts
+                  style: GoogleFonts.openSans(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(height: 32),
-                const InputFieldWidget(
+                InputFieldWidget(
+                  controller: emailController,
                   label: 'Email',
                   hint: 'example@email.com',
                   obscureText: false,
                 ),
                 const SizedBox(height: 16),
-                const InputFieldWidget(
+                InputFieldWidget(
+                  controller: passwordController,
                   label: 'Kata Sandi',
-                  hint: 'masukkan kata sandi',
+                  hint: 'Masukkan kata sandi',
                   obscureText: true,
                 ),
                 const SizedBox(height: 16),
-                const InputFieldWidget(
+                InputFieldWidget(
+                  controller: phoneController,
                   label: 'Nomor Telepon',
                   hint: '081234567890',
                   obscureText: false,
                 ),
                 const SizedBox(height: 16),
-                const InputFieldWidget(
+                InputFieldWidget(
+                  controller: nameController,
                   label: 'Nama Lengkap',
-                  hint: 'Masukkan Nama Anda',
+                  hint: 'Masukkan nama Anda',
                   obscureText: false,
                 ),
                 const SizedBox(height: 32),
                 ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const LoginAccountScreen(),
-                      ),
-                    );
-                  },
+                  onPressed: isLoading ? null : createAccount,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                    const Color(0xFFDA1E3D), // Custom red color
+                    backgroundColor: const Color(0xFFDA1E3D),
                     minimumSize: const Size(double.infinity, 48),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                   ),
-                  child: Text(
+                  child: isLoading
+                      ? const CircularProgressIndicator(
+                    color: Colors.white,
+                  )
+                      : Text(
                     'Daftar',
-                    style: GoogleFonts.openSans( // Menggunakan Open Sans di tombol Daftar
+                    style: GoogleFonts.openSans(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
@@ -85,9 +135,7 @@ class CreateAccountScreen extends StatelessWidget {
                   children: [
                     Text(
                       'Sudah punya akun?',
-                      style: GoogleFonts.openSans( // Menggunakan Open Sans di teks ini
-                        fontSize: 14,
-                      ),
+                      style: GoogleFonts.openSans(fontSize: 14),
                     ),
                     const SizedBox(width: 4),
                     GestureDetector(
@@ -101,9 +149,9 @@ class CreateAccountScreen extends StatelessWidget {
                       },
                       child: Text(
                         'Masuk',
-                        style: GoogleFonts.openSans( // Menggunakan Open Sans di teks ini
+                        style: GoogleFonts.openSans(
                           fontSize: 14,
-                          color: const Color(0xFFDA1E3D), // Custom red color
+                          color: const Color(0xFFDA1E3D),
                           fontWeight: FontWeight.bold,
                         ),
                       ),
