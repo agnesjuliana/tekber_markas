@@ -40,12 +40,6 @@ class BottomNavBar extends StatelessWidget {
             onTap: () => onTap(1),
           ),
           _NavBarItem(
-            assetPath: 'lib/assets/icons/calendar.png',
-            label: 'Favorite',
-            isActive: currentIndex == 2,
-            onTap: () => onTap(2),
-          ),
-          _NavBarItem(
             assetPath: 'lib/assets/icons/profile.png',
             label: 'Profile',
             isActive: currentIndex == 3,

@@ -27,7 +27,7 @@ class EventCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Gambar banner dari Firestore
+            // Gambar banner
             Container(
               width: 220,
               height: 140,
@@ -48,10 +48,9 @@ class EventCard extends StatelessWidget {
                   Text(
                     eventData['title'] ?? 'Judul Event',
                     style: TextStyle(
-                      color: Colors.black,
-                      fontFamily: 'Open Sans',
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
+                      color: Colors.black,
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -63,10 +62,9 @@ class EventCard extends StatelessWidget {
                         ? '${eventData['date'].toDate()}'
                         : 'Tanggal Event',
                     style: TextStyle(
-                      color: Color(0xFF89939E),
-                      fontFamily: 'Open Sans',
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
+                      color: Color(0xFF89939E),
                     ),
                   ),
                   SizedBox(height: 8),
@@ -74,10 +72,9 @@ class EventCard extends StatelessWidget {
                   Text(
                     eventData['location'] ?? 'Lokasi Event',
                     style: TextStyle(
-                      color: Color(0xFF89939E),
-                      fontFamily: 'Open Sans',
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
+                      color: Color(0xFF89939E),
                     ),
                   ),
                 ],

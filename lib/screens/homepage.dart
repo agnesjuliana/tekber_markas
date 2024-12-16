@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:tekber_markas/screens/profile_screen.dart';
+import 'package:tekber_markas/screens/favorite_event.dart';
+import 'package:tekber_markas/screens/search_screen.dart';
 import 'package:tekber_markas/widgets/banner.dart';
 import 'package:tekber_markas/widgets/event_card.dart';
+import 'package:tekber_markas/widgets/bottom_navbar.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -10,6 +14,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  int _currentIndex = 0;
+
   String userName = "Nama Pengguna"; // Nama default
   String profileImage = 'lib/assets/images/profil.png'; // Gambar default
 
@@ -24,7 +30,6 @@ class _HomePageState extends State<HomePage> {
     try {
       final user = FirebaseAuth.instance.currentUser;
       if (user != null) {
-        // Ambil data user dari Firestore
         DocumentSnapshot userDoc = await FirebaseFirestore.instance
             .collection('users')
             .doc(user.uid)
@@ -32,7 +37,7 @@ class _HomePageState extends State<HomePage> {
 
         if (userDoc.exists) {
           setState(() {
-            userName = userDoc['name'] ?? 'User'; // Ganti nama jika ditemukan
+            userName = userDoc['name'] ?? 'User';
           });
         }
       }
@@ -40,6 +45,38 @@ class _HomePageState extends State<HomePage> {
       print("Error mengambil data pengguna: $e");
     }
   }
+
+  @override
+  Widget build(BuildContext context) {
+    final List<Widget> _screens = [
+      HomePageContent(userName: userName), // Halaman utama
+      EventScreen(),                      // Halaman pencarian
+      FavoriteScreen(),                    // Halaman favorit
+      ProfileScreen(),                     // Halaman profil
+    ];
+
+    return Scaffold(
+      body: IndexedStack(
+        index: _currentIndex,
+        children: _screens,
+      ),
+      bottomNavigationBar: BottomNavBar(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+      ),
+    );
+  }
+}
+
+// Kelas HomePageContent yang memuat EventCard dan Firebase data
+class HomePageContent extends StatelessWidget {
+  final String userName;
+
+  const HomePageContent({super.key, required this.userName});
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +91,7 @@ class _HomePageState extends State<HomePage> {
             children: [
               CircleAvatar(
                 radius: 25,
-                backgroundImage: AssetImage(profileImage), // Gambar default
+                backgroundImage: AssetImage('lib/assets/images/profil.png'), // Gambar default
               ),
               SizedBox(width: 17),
               Column(
@@ -83,30 +120,17 @@ class _HomePageState extends State<HomePage> {
           SizedBox(height: 36),
           Text('Sorotan Event', style: _headerStyle(25, FontWeight.w700)),
           SizedBox(height: 12),
-          BannerWidget(), // Menggunakan BannerWidget di sini
+          BannerWidget(), // Banner
           SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CircleAvatar(radius: 5, backgroundColor: Color(0xFFDA1E3D)),
-              SizedBox(width: 8),
-              CircleAvatar(radius: 4, backgroundColor: Color(0xFFC1C6CC)),
-              SizedBox(width: 8),
-              CircleAvatar(radius: 4, backgroundColor: Color(0xFFC1C6CC)),
-            ],
-          ),
-          SizedBox(height: 54),
-          Divider(color: Color.fromARGB(255, 255, 255, 255), thickness: 1.0, height: 20.0),
-          SizedBox(height: 27),
           Text('Event Lainnya', style: _headerStyle(16, FontWeight.w600)),
           SizedBox(height: 12),
           Container(
             height: 261,
             child: StreamBuilder(
-              stream: FirebaseFirestore.instance.collection('events').snapshots(),
+              stream: FirebaseFirestore.instance.collection('event').snapshots(),
               builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.hasError) {
-                  return Center(child: Text("Error memuat data event"));
+                  return Center(child: Text("Error memuat data event: ${snapshot.error}"));
                 }
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(child: CircularProgressIndicator());
@@ -114,20 +138,26 @@ class _HomePageState extends State<HomePage> {
 
                 final events = snapshot.data!.docs;
 
+                if (events.isEmpty) {
+                  return Center(child: Text("Tidak ada event tersedia."));
+                }
+
                 return ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: events.length,
                   itemBuilder: (context, index) {
+                    final event = events[index];
                     return Padding(
                       padding: const EdgeInsets.only(right: 16),
-                      child: EventCard(eventData: events[index]),
+                      child: EventCard(eventData: event),
                     );
                   },
                 );
               },
             ),
+
           ),
-          SizedBox(height: 50), // Padding tambahan di bagian bawah
+          SizedBox(height: 50), // Jarak tambahan
         ],
       ),
     );
