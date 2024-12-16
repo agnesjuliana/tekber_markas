@@ -4,6 +4,7 @@ import 'package:tekber_markas/widgets/input_field_widget.dart';
 import 'package:tekber_markas/widgets/logo_widget.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'; // Tambahkan Firestore
 
 class CreateAccountScreen extends StatefulWidget {
   const CreateAccountScreen({super.key});
@@ -22,15 +23,34 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
 
   // Fungsi untuk membuat akun baru
   Future<void> createAccount() async {
+    setState(() {
+      isLoading = true; // Menampilkan loading indicator
+    });
+
     try {
       print("Membuat akun...");
 
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      // Buat akun menggunakan Firebase Authentication
+      UserCredential userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
         email: emailController.text.trim(),
         password: passwordController.text.trim(),
       );
 
-      print("Akun berhasil dibuat! Navigasi ke LoginAccountScreen...");
+      // Simpan data tambahan pengguna ke Firestore
+      await FirebaseFirestore.instance
+          .collection('users') // Nama koleksi di Firestore
+          .doc(userCredential.user!.uid) // Gunakan UID pengguna sebagai ID dokumen
+          .set({
+        'email': emailController.text.trim(),
+        'name': nameController.text.trim(),
+        'phone': phoneController.text.trim(),
+        'createdAt': FieldValue.serverTimestamp(), // Timestamp saat akun dibuat
+      });
+
+      print("Akun berhasil dibuat dan data disimpan di Firestore!");
+
+      // Navigasi ke halaman login
       if (mounted) {
         Navigator.pushReplacement(
           context,
@@ -39,13 +59,13 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
           ),
         );
       }
-    } catch (e) {
+    } on FirebaseAuthException catch (e) {
       print("Error: $e");
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
           title: const Text('Error'),
-          content: Text(e.toString()),
+          content: Text(e.message ?? 'Terjadi kesalahan'),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
@@ -54,9 +74,12 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
           ],
         ),
       );
+    } finally {
+      setState(() {
+        isLoading = false; // Sembunyikan loading indicator
+      });
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
