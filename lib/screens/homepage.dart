@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tekber_markas/screens/profile_screen.dart';
-import 'package:tekber_markas/screens/favorite_event.dart';
-import 'package:tekber_markas/screens/search_screen.dart';
-import 'package:tekber_markas/widgets/bottom_navbar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tekber_markas/widgets/banner.dart';
 import 'package:tekber_markas/widgets/event_card.dart';
 
@@ -12,38 +10,37 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _currentIndex = 0;
-
-  // Daftar halaman yang akan ditampilkan sesuai dengan tab yang dipilih
-  final List<Widget> _screens = [
-    HomePageContent(),    // Halaman utama HomePage tetap ada
-    EventScreen(),        // Halaman Event
-    FavoriteScreen(),     // Calendar Screen
-    ProfileScreen(),      // Profile Screen
-  ];
-
-  void _onNavBarTap(int index) {
-    setState(() {
-      _currentIndex = index; // Memperbarui index tab yang aktif
-    });
-  }
+  String userName = "Nama Pengguna"; // Nama default
+  String profileImage = 'lib/assets/images/profil.png'; // Gambar default
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: IndexedStack(
-        index: _currentIndex, // Menampilkan halaman sesuai dengan tab yang aktif
-        children: _screens,   // Daftar halaman yang akan ditampilkan
-      ),
-      bottomNavigationBar: BottomNavBar(
-        currentIndex: _currentIndex,
-        onTap: _onNavBarTap,  // Memanggil fungsi saat tab ditekan
-      ),
-    );
+  void initState() {
+    super.initState();
+    fetchUserData();
   }
-}
 
-class HomePageContent extends StatelessWidget {
+  // Fungsi untuk mengambil data user dari Firestore
+  Future<void> fetchUserData() async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        // Ambil data user dari Firestore
+        DocumentSnapshot userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .get();
+
+        if (userDoc.exists) {
+          setState(() {
+            userName = userDoc['name'] ?? 'User'; // Ganti nama jika ditemukan
+          });
+        }
+      }
+    } catch (e) {
+      print("Error mengambil data pengguna: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,14 +54,17 @@ class HomePageContent extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 25,
-                backgroundImage: AssetImage('lib/assets/images/profil.png'),
+                backgroundImage: AssetImage(profileImage), // Gambar default
               ),
               SizedBox(width: 17),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('Halo,', style: _headerStyle(14, FontWeight.w400)),
-                  Text('Adhitya Pratama', style: _headerStyle(20, FontWeight.w700)),
+                  Text(
+                    userName, // Nama user dari Firestore
+                    style: _headerStyle(20, FontWeight.w700),
+                  ),
                 ],
               ),
               Spacer(),
@@ -102,18 +102,32 @@ class HomePageContent extends StatelessWidget {
           SizedBox(height: 12),
           Container(
             height: 261,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: 3,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.only(right: 16),
-                  child: EventCard(), // Menggunakan EventCard di sini
+            child: StreamBuilder(
+              stream: FirebaseFirestore.instance.collection('events').snapshots(),
+              builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.hasError) {
+                  return Center(child: Text("Error memuat data event"));
+                }
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                }
+
+                final events = snapshot.data!.docs;
+
+                return ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: events.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 16),
+                      child: EventCard(eventData: events[index]),
+                    );
+                  },
                 );
               },
             ),
           ),
-          SizedBox(height: 50),  // Padding tambahan di bagian bawah untuk memberi jarak dengan BottomNavBar
+          SizedBox(height: 50), // Padding tambahan di bagian bawah
         ],
       ),
     );
