@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tekber_markas/screens/profile_edit_screen.dart';
+import 'package:tekber_markas/screens/login_account.dart';  // Pastikan Anda mengimport halaman login
 
 class SettingsScreen extends StatelessWidget {
   @override
@@ -58,6 +61,22 @@ class SettingsScreen extends StatelessWidget {
             title: 'Umpan balik',
             onTap: () {},
           ),
+          // Tombol Log Out
+          _settingsTile(
+            icon: Icons.exit_to_app,
+            title: 'Log Out',
+            onTap: () async {
+              await _logOut(context);
+            },
+          ),
+          // Tombol Hapus Akun
+          _settingsTile(
+            icon: Icons.delete_forever,
+            title: 'Hapus Akun',
+            onTap: () async {
+              await _deleteAccount(context);
+            },
+          ),
           // Undang Teman
           ListTile(
             leading: Icon(Icons.group_add_outlined, color: Colors.grey[400]),
@@ -83,32 +102,48 @@ class SettingsScreen extends StatelessWidget {
             onTap: () {},
           ),
           SizedBox(height: 30),
-          // Tombol Keluar
-          Center(
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFDA1E3D), // Custom red color
-                minimumSize: const Size(double.infinity, 48),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-              ),
-              onPressed: () {
-                // Logika untuk Keluar
-              },
-              child: Text(
-                'KELUAR',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 16,
-                ),
-              ),
-            ),
-          ),
         ],
       ),
     );
+  }
+
+  // Fungsi untuk melakukan log out
+  Future<void> _logOut(BuildContext context) async {
+    try {
+      await FirebaseAuth.instance.signOut(); // Log out dari Firebase
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginAccountScreen()), // Ganti ke halaman login
+      );
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Anda berhasil keluar")));
+    } catch (e) {
+      print("Error during log out: $e");
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Gagal keluar: $e")));
+    }
+  }
+
+  // Fungsi untuk menghapus akun
+  Future<void> _deleteAccount(BuildContext context) async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+
+      if (user != null) {
+        // Hapus data user dari Firestore
+        await FirebaseFirestore.instance.collection('users').doc(user.uid).delete();
+
+        // Hapus akun dari Firebase Authentication
+        await user.delete();
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => LoginAccountScreen()), // Ganti ke halaman login setelah penghapusan
+        );
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Akun berhasil dihapus")));
+      }
+    } catch (e) {
+      print("Error deleting account: $e");
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Gagal menghapus akun: $e")));
+    }
   }
 
   // Widget untuk ListTile Setting

@@ -1,6 +1,75 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class ProfileEditScreen extends StatelessWidget {
+class ProfileEditScreen extends StatefulWidget {
+  @override
+  _ProfileEditScreenState createState() => _ProfileEditScreenState();
+}
+
+class _ProfileEditScreenState extends State<ProfileEditScreen> {
+  final TextEditingController fullNameController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+  bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    loadUserData();
+  }
+
+  // Fungsi untuk memuat data user dari Firestore
+  Future<void> loadUserData() async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        DocumentSnapshot userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .get();
+        if (userDoc.exists) {
+          setState(() {
+            fullNameController.text = userDoc['name'] ?? '';
+            phoneController.text = userDoc['number'] ?? '';
+          });
+        }
+      }
+    } catch (e) {
+      print("Error loading user data: $e");
+    }
+  }
+
+  // Fungsi untuk menyimpan perubahan ke Firestore
+  Future<void> saveChanges() async {
+    try {
+      setState(() {
+        isLoading = true;
+      });
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        // Update data di Firestore tanpa mengubah email
+        await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
+          'name': fullNameController.text.trim(),
+          'number': phoneController.text.trim(),
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Profil berhasil diperbarui!")),
+        );
+        Navigator.of(context).pop(); // Kembali ke halaman profil
+      }
+    } catch (e) {
+      print("Error updating user data: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Gagal memperbarui profil: $e")),
+      );
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,7 +103,7 @@ class ProfileEditScreen extends StatelessWidget {
                   },
                   child: CircleAvatar(
                     radius: 50,
-                    backgroundImage: AssetImage('assets/profile_pic.png'), // Ganti sesuai gambar profil
+                    backgroundImage: AssetImage('assets/profile_pic.png'),
                   ),
                 ),
                 SizedBox(height: 8),
@@ -46,52 +115,39 @@ class ProfileEditScreen extends StatelessWidget {
               ],
             ),
           ),
-
-          // Form Input
+          // Input Fields
           _inputField(
-            title: 'Nama Depan *',
-            hintText: 'Adhitya',
-          ),
-          _inputField(
-            title: 'Nama Belakang *',
-            hintText: 'Pratama',
-          ),
-          _inputField(
-            title: 'Alamat Email *',
-            hintText: 'adhityapmp@gmail.com',
+            title: 'Nama Lengkap *',
+            controller: fullNameController,
+            hintText: 'Nama Lengkap Anda',
           ),
           _inputField(
             title: 'Nomor Handphone *',
-            hintText: '+62 821 1234 5678',
+            controller: phoneController,
+            hintText: '081234567890',
           ),
-          _inputField(
-            title: 'Tanggal Lahir *',
-            hintText: '16/02/2003',
-          ),
-
           SizedBox(height: 30),
-
           // Tombol Simpan Perubahan
           Center(
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFDA1E3D), // Warna merah sesuai desain
+                backgroundColor: const Color(0xFFDA1E3D),
                 minimumSize: const Size(double.infinity, 48),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.0),
                 ),
               ),
-              onPressed: () {
-                // Logika untuk menyimpan perubahan
-              },
-              child: Text(
-                'SIMPAN PERUBAHAN',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 16,
-                ),
-              ),
+              onPressed: isLoading ? null : saveChanges,
+              child: isLoading
+                  ? CircularProgressIndicator(color: Colors.white)
+                  : Text(
+                      'SIMPAN PERUBAHAN',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 16,
+                      ),
+                    ),
             ),
           ),
         ],
@@ -102,6 +158,7 @@ class ProfileEditScreen extends StatelessWidget {
   // Fungsi untuk membuat Input Field
   Widget _inputField({
     required String title,
+    required TextEditingController controller,
     required String hintText,
   }) {
     return Column(
@@ -116,6 +173,7 @@ class ProfileEditScreen extends StatelessWidget {
         ),
         SizedBox(height: 8),
         TextField(
+          controller: controller,
           decoration: InputDecoration(
             hintText: hintText,
             border: OutlineInputBorder(
