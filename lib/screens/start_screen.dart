@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tekber_markas/widgets/start_button_widget.dart';
 import 'package:tekber_markas/widgets/logo_text_widget.dart';
-import 'package:tekber_markas/widgets/skip_widget.dart';
 
 class StartScreen extends StatelessWidget {
   const StartScreen({super.key});
@@ -31,7 +30,6 @@ class StartScreen extends StatelessWidget {
               ButtonWidget(),
               SizedBox(height: 20),
               // Skip Section
-              SkipWidget(),
             ],
           ),
         ),

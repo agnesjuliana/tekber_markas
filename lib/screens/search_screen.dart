@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:tekber_markas/widgets/event_card.dart'; // Make sure this is imported
+import 'package:tekber_markas/widgets/event_card.dart';
+
 class EventScreen extends StatefulWidget {
   @override
   _EventScreenState createState() => _EventScreenState();
 }
+
 class _EventScreenState extends State<EventScreen> {
   String activeTab = 'All';
   final List<String> tabs = ['All', 'Hustler', 'Hacker', 'Hipster'];
+  final TextEditingController searchController = TextEditingController();
+  String searchQuery = '';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,7 +36,7 @@ class _EventScreenState extends State<EventScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Search and Filter Row
+            // Search Input
             Row(
               children: [
                 Expanded(
@@ -58,8 +63,14 @@ class _EventScreenState extends State<EventScreen> {
                             color: Colors.grey,
                           ),
                         ),
-                        const Expanded(
+                        Expanded(
                           child: TextField(
+                            controller: searchController,
+                            onChanged: (value) {
+                              setState(() {
+                                searchQuery = value;
+                              });
+                            },
                             decoration: InputDecoration(
                               hintText: 'Search...',
                               hintStyle: TextStyle(color: Colors.grey),
@@ -68,17 +79,6 @@ class _EventScreenState extends State<EventScreen> {
                           ),
                         ),
                       ],
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Container(
-                  width: 28,
-                  height: 28,
-                  decoration: const BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage('assets/icons/filter.png'),
-                      fit: BoxFit.contain,
                     ),
                   ),
                 ),
@@ -124,12 +124,11 @@ class _EventScreenState extends State<EventScreen> {
               ),
             ),
             const SizedBox(height: 16),
-            // Section Content
+            // Event List
             Expanded(
               child: StreamBuilder(
                 stream: FirebaseFirestore.instance
                     .collection('event')
-                    .where('category', isEqualTo: activeTab == 'All' ? null : activeTab)
                     .snapshots(),
                 builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (snapshot.hasError) {
@@ -138,10 +137,18 @@ class _EventScreenState extends State<EventScreen> {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Center(child: CircularProgressIndicator());
                   }
-                  final events = snapshot.data!.docs;
+
+                  // Filter berdasarkan search query
+                  final events = snapshot.data!.docs.where((event) {
+                    final title = event['title']?.toString().toLowerCase() ?? '';
+                    return title.contains(searchQuery.toLowerCase());
+                  }).toList();
+
                   if (events.isEmpty) {
                     return Center(child: Text("Tidak ada event tersedia."));
                   }
+
+                  // Tampilkan berdasarkan kategori
                   return ListView(
                     children: [
                       if (activeTab == 'All' || activeTab == 'Hustler')
@@ -160,10 +167,13 @@ class _EventScreenState extends State<EventScreen> {
       ),
     );
   }
+
   Widget buildSection(String title, List<QueryDocumentSnapshot> events) {
+    // Filter event berdasarkan kategori
     final categoryEvents = events
         .where((event) => event['category'] == title)
         .toList();
+
     return categoryEvents.isEmpty
         ? Container()
         : Column(
